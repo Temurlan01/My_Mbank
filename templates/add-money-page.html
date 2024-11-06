@@ -60,10 +60,11 @@
     <div class="container">
         <h2>Пополнение баланса</h2>
         <div class="balance">
-            Баланс: <span id="user-balance">0</span> сом
+            Баланс: <span id="user-balance">{{current_user.balance}}</span> сом
         </div>
-        <button class="button">Добавить 1 cом на баланс</button>
+         <a href="{% url 'click-button-url' %}"><button class="button">Добавить 1 cом на баланс</button></a>
     </div>
+
 
 </body>
 </html>
