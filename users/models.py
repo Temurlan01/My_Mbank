@@ -2,6 +2,9 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from users.manager import CustomUserManager
+
+
 class CustomUser(AbstractUser):
     """"Моделька для Кастомного пользователя"""
     username = None
@@ -9,7 +12,6 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = []
-
     objects = CustomUserManager()
 
     class Meta:
