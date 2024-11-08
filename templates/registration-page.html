@@ -77,7 +77,8 @@
 <body>
     <div class="container">
         <h2>Регистрация</h2>
-        <form action="/register" method="POST">
+        <form action="{% url 'registration-url' %}" method="POST">
+            {% csrf_token %}
             <label for="name">Ваше имя:</label>
             <input type="text" id="name" name="name" placeholder="Введите ваше имя" required>
 
@@ -87,7 +88,7 @@
             <label for="password">Пароль:</label>
             <input type="password" id="password" name="password" placeholder="Введите пароль" required>
 
-            <input type="submit" value="Зарегистрироваться">
+            <input type="submit" name="register" value="Зарегистрироваться">
         </form>
         <p class="note">Уже есть аккаунт? <a href="/login">Войти</a></p>
     </div>
