@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -14,6 +15,7 @@
             min-height: 100vh;
             margin: 0;
             background-color: #f3f4f6;
+            position: relative;
         }
 
         .container {
@@ -23,6 +25,7 @@
             border-radius: 8px;
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
         h2 {
@@ -31,6 +34,38 @@
             margin-bottom: 20px;
         }
 
+        /* Кнопки */
+        .header-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logout-btn, .action-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .action-btn {
+            background-color: #4caf50;
+        }
+
+        .action-btn:hover {
+            background-color: #388e3c;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Поля ввода */
         label {
             display: block;
             margin-bottom: 8px;
@@ -71,12 +106,25 @@
             font-size: 14px;
             margin-top: 10px;
         }
+
     </style>
 </head>
 <body>
     <div class="container">
+
         <h2>Перевод средств</h2>
-        <form action="{% url 'make-transaction-url' %}" method="POST">
+         {% if user.is_authenticated %}
+        <!-- Кнопки для действия -->
+        <div class="header-buttons">
+            <a href="{% url 'profile-url' %}" class="action-btn">Профиль</a>
+            <a href="{%url 'mining-money-url'%}" class="action-btn">Майнинг</a>
+            <form action="{% url 'logout-url' %}" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button class="logout-btn" type="submit">Выйти</button>
+            </form>
+        </div>
+
+        <form action="{% url 'make-transfers-url' %}" method="POST">
             {% csrf_token %}
             <label for="phone">Номер телефона получателя:</label>
             <input type="text" id="phone" name="phone" placeholder="+996706123456" required>
@@ -86,7 +134,13 @@
 
             <input type="submit" value="Перевести средства">
         </form>
+
         <p class="note">Введите номер телефона и сумму для перевода.</p>
+        {% else %}
+            <p class="note">Пожалуйста, войдите в систему.</p>
+            <a href="{% url 'register-url' %}" class="action-btn">Регистрация</a>
+            <a href="{% url 'login-url' %}" class="action-btn">Войти в аккаунт</a>
+        {% endif %}
     </div>
 </body>
 </html>

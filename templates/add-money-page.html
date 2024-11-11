@@ -24,6 +24,39 @@
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
+            position: relative;
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .button-nav {
+            padding: 10px 20px;
+            font-size: 14px;
+            color: white;
+            background-color: #4caf50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .button-nav:hover {
+            background-color: #45a049;
+        }
+
+        /* Отдельный стиль для кнопки "Выйти" */
+        .logout-btn {
+            background-color: #f44336;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
         }
 
         h2 {
@@ -58,13 +91,31 @@
 </head>
 <body>
     <div class="container">
+        {% if user.is_authenticated %}
+        <!-- Кнопки навигации -->
+        <div class="header-buttons">
+            <a href="{% url 'profile-url' %}" class="button-nav">Профиль</a>
+            <a href="{% url 'transactions-url' %}" class="button-nav">Перевод</a>
+            <form action="{% url 'logout-url' %}" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button class="button-nav logout-btn" type="submit">Выйти</button>
+            </form>
+        </div>
+
         <h2>Пополнение баланса</h2>
         <div class="balance">
-            Баланс: <span id="user-balance">{{current_user.balance}}</span> сом
+            Баланс: <span id="user-balance">{{ current_user.balance }}</span> сом
         </div>
-         <a href="{% url 'click-button-url' %}"><button class="button">Добавить 1000 cом на баланс</button></a>
+
+        <form action="{% url 'add-money-url' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="button">Добавить 100 сом на баланс</button>
+        </form>
+        {% else %}
+        <p class="note">Пожалуйста, войдите в систему.</p>
+            <a href="{% url 'register-url' %}" class="action-btn">Регистрация</a>
+            <a href="{% url 'login-url' %}" class="action-btn">Войти в аккаунт</a>
+        {% endif %}
     </div>
-
-
 </body>
 </html>

@@ -14,6 +14,7 @@
             min-height: 100vh;
             margin: 0;
             background-color: #f3f4f6;
+            position: relative;
         }
 
         .container {
@@ -23,12 +24,43 @@
             border-radius: 8px;
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
         h2 {
             text-align: center;
             color: #333;
             margin-bottom: 20px;
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logout-btn, .action-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .action-btn {
+            background-color: #4caf50;
+        }
+
+        .action-btn:hover {
+            background-color: #388e3c;
+        }
+
+        .logout-btn:hover {
+            background-color: #d32f2f;
         }
 
         .info {
@@ -64,23 +96,38 @@
 </head>
 <body>
     <div class="container">
+        {% if current_user.is_authenticated %}
+        <div class="header-buttons">
+            <a href="{% url 'transactions-url' %}" class="action-btn">Переводы денег</a>
+            <a href="{% url 'add-money-url' %}" class="action-btn">Кликать деньги</a>
+            <form action="{% url 'logout-url' %}" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button class="logout-btn" type="submit">Выйти</button>
+            </form>
+        </div>
+
         <h2>Моя страница</h2>
 
         <div class="info">
             <div class="info-label">Имя:</div>
-            <div id="user-name">{{current_user.username}}</div> <!-- Пример имени пользователя -->
+            <div id="user-name">{{ current_user.first_name }}</div>
         </div>
 
         <div class="info">
             <div class="info-label">Номер телефона:</div>
-            <div id="user-phone">{{current_user.phone_number}}</div> <!-- Пример номера телефона -->
+            <div id="user-phone">{{ current_user.phone_number }}</div>
         </div>
 
         <div class="balance">
-            Баланс: <span id="user-balance">{{current_user.balance}}</span> <!-- Пример баланса -->
+            Баланс: <span id="user-balance">{{ current_user.balance }}</span>
         </div>
 
         <p class="note">Ваш текущий баланс и информация о профиле.</p>
+        {% else %}
+            <p class="note">Пожалуйста, войдите в систему.</p>
+            <a href="{% url 'register-url' %}" class="action-btn">Регистрация</a>
+            <a href="{% url 'login-url' %}" class="action-btn">Войти в аккаунт</a>
+        {% endif %}
     </div>
 </body>
 </html>
