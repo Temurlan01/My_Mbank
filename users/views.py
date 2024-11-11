@@ -1,10 +1,9 @@
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
 from django.db import IntegrityError, transaction
 from django.views.generic import TemplateView
 from django.contrib.auth import login, logout
 from users.models import CustomUser
-from django.contrib import messages
 from django.views import View
 
 
@@ -21,14 +20,12 @@ class MakeLoginView(View):
         try:
             user = CustomUser.objects.get(phone_number=phone_number)
         except CustomUser.DoesNotExist:
-            messages.error(request, "Пользователь с таким номером телефона не найден.")
             return redirect('login-url')
 
         if user.check_password(password):
             login(request, user)
             return redirect('profile-url')
         else:
-            messages.error(request, "Неверный пароль.")
             return redirect('login-url')
 
 
@@ -75,7 +72,6 @@ class MakeRegistrationView(View):
             login(request, user)
             return redirect('profile-url')
         except IntegrityError:
-            messages.error(request, "Такой номер телефона уже зарегистрирован.")
             return redirect('register-url')
 
 
@@ -93,14 +89,13 @@ class AddMoneyListView(TemplateView):
 class ClickButtonView(TemplateView):
     template_name = 'add-money-page.html'
 
-    def get_context_data(self, **kwargs):
+    def post(self, request, *args, **kwargs):
         current_user = self.request.user
-        current_user.balance += 1000
+        current_user.balance += 100
         current_user.save()
-        context = {
-            'current_user': current_user
-        }
-        return context
+        context = {'current_user': current_user}
+
+        return render(request, self.template_name, context)
 
 
 class MakeTransactionView(TemplateView):
@@ -115,12 +110,19 @@ class MakeTransactionView(TemplateView):
         try:
             receiver = CustomUser.objects.get(phone_number=phone_number)
         except:
-            raise Http404
+            return  HttpResponse('Такого номера не существует')
+
+        if sender.balance < amount:
+            return HttpResponse('У вас недостаточно средств!')
+
+        if sender.phone_number == phone_number:
+            return HttpResponse ('Нельзя отправлять самому себе ')
 
         if amount > sender.balance or amount <= 0:
-            return redirect('transactions-url')
+            return HttpResponse('Вы пытаетесь отправить отрицательное число или у вас недостаточно средств на балансе')
 
-        with transaction.atomic():
+
+        with transaction.atomic():  # атомарная транзакция в бд
             receiver.balance += amount
             sender.balance -= amount
 
@@ -129,6 +131,7 @@ class MakeTransactionView(TemplateView):
 
         return redirect('profile-url')
 
-
+class SnakeListView(TemplateView):
+    template_name = 'snake.html'
 
 

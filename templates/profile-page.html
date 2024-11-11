@@ -7,56 +7,76 @@
     <style>
         /* Общие стили */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #f3f4f6;
-            position: relative;
+            background: #f5f5f5;
         }
 
         .container {
-            max-width: 400px;
             width: 100%;
-            padding: 20px;
-            border-radius: 8px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            position: relative;
+            max-width: 420px;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
 
         h2 {
-            text-align: center;
             color: #333;
-            margin-bottom: 20px;
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: 600;
         }
 
         .header-buttons {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
-        .logout-btn, .action-btn {
-            background-color: #f44336;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
+        .button-nav {
+            padding: 12px 20px;
             font-size: 14px;
+            color: #fff;
+            background-color: #00796b;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
             text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s;
         }
 
-        .action-btn {
-            background-color: #4caf50;
+
+        .button-nav:hover {
+            background-color: #004d40;
+            transform: translateY(-2px);
         }
 
-        .action-btn:hover {
-            background-color: #388e3c;
+        .button-ven {
+            padding: 12px 20px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #00796b;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .button-ven:hover {
+            background-color: #004d40;
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            background-color: #424242;
         }
 
         .logout-btn:hover {
@@ -66,7 +86,7 @@
         .info {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #ddd;
             font-size: 16px;
             color: #555;
@@ -78,31 +98,48 @@
         }
 
         .balance {
-            text-align: center;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
-            color: #4caf50;
+            color: #00796b;
             margin-top: 20px;
-            margin-bottom: 10px;
+            margin-bottom: 25px;
         }
 
         .note {
-            text-align: center;
+            font-size: 16px;
             color: #888;
-            font-size: 14px;
-            margin-top: 10px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            margin: 10px 0;
+            font-size: 16px;
+            color: #fff;
+            background-color: #1976d2;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: #1565c0;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        {% if current_user.is_authenticated %}
+        {% if user.is_authenticated %}
+        <!-- Кнопки навигации -->
         <div class="header-buttons">
-            <a href="{% url 'transactions-url' %}" class="action-btn">Переводы денег</a>
-            <a href="{% url 'add-money-url' %}" class="action-btn">Кликать деньги</a>
+            <a href="{% url 'snake-url' %}" class="button-ven">нажми</a>
+            <a href="{% url 'transactions-url' %}" class="button-nav">Переводы денег</a>
+            <a href="{% url 'mining-money-url' %}" class="button-nav">Майнинг</a>
             <form action="{% url 'logout-url' %}" method="POST" style="display: inline;">
                 {% csrf_token %}
-                <button class="logout-btn" type="submit">Выйти</button>
+                <button class="button-nav logout-btn" type="submit">Выйти</button>
             </form>
         </div>
 
@@ -110,23 +147,23 @@
 
         <div class="info">
             <div class="info-label">Имя:</div>
-            <div id="user-name">{{ current_user.first_name }}</div>
+            <div id="user-name">{{ user.first_name }}</div>
         </div>
 
         <div class="info">
             <div class="info-label">Номер телефона:</div>
-            <div id="user-phone">{{ current_user.phone_number }}</div>
+            <div id="user-phone">{{ user.phone_number }}</div>
         </div>
 
         <div class="balance">
-            Баланс: <span id="user-balance">{{ current_user.balance }}</span>
+            Баланс: <span id="user-balance">{{ user.balance }}</span> сом
         </div>
 
         <p class="note">Ваш текущий баланс и информация о профиле.</p>
         {% else %}
-            <p class="note">Пожалуйста, войдите в систему.</p>
-            <a href="{% url 'register-url' %}" class="action-btn">Регистрация</a>
-            <a href="{% url 'login-url' %}" class="action-btn">Войти в аккаунт</a>
+        <p class="note">Пожалуйста, войдите в систему.</p>
+        <a href="{% url 'register-url' %}" class="action-btn">Регистрация</a>
+        <a href="{% url 'login-url' %}" class="action-btn">Войти в аккаунт</a>
         {% endif %}
     </div>
 </body>

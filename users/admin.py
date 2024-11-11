@@ -10,7 +10,7 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('phone_number',)
     fieldsets = (
         (None, {"fields": ("phone_number", "password")}),
-        ("Personal info", {"fields": ("first_name", "last_name",)}),
+        ("Personal info", {"fields": ("first_name", "last_name", "balance",)}),
         (
             "Permissions",
             {
