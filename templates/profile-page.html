@@ -147,17 +147,21 @@
 
         <div class="info">
             <div class="info-label">Имя:</div>
-            <div id="user-name">{{ user.first_name }}</div>
+            <div id="user-name">{{ current_user.first_name }}</div>
         </div>
 
         <div class="info">
             <div class="info-label">Номер телефона:</div>
-            <div id="user-phone">{{ user.phone_number }}</div>
+            <div id="user-phone">{{ current_user.phone_number }}</div>
         </div>
 
         <div class="balance">
-            Баланс: <span id="user-balance">{{ user.balance }}</span> сом
+            Баланс: <span id="user-balance">{{ current_user.balance }}</span> сом
         </div>
+
+
+        <p>Ваш баланс в долларах: {{ dollar_balance }} USD</p>
+
 
         <p class="note">Ваш текущий баланс и информация о профиле.</p>
         {% else %}

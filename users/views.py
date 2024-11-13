@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth import login, logout
 from users.models import CustomUser
 from django.views import View
+import requests
 
 
 class LoginListView(TemplateView):
@@ -38,10 +39,22 @@ class ProfileListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         current_user = self.request.user
+
+        API_KEY = "ae5ad3d6b43e7671c758b11d"
+        url = f"https://v6.exchangerate-api.com/v6/{API_KEY}/latest/KGS"
+        response = requests.get(url)
+        data = response.json()
+        currencies = data['conversion_rates']
+        USD = currencies['USD']
+        user_dollar_balance = USD * current_user.balance
+
         context = {
-            'current_user': current_user
+            'current_user': current_user,
+            'dollar_balance': round(user_dollar_balance, 1)
+
         }
         return context
+
 
 
 class TransactionListView(TemplateView):
